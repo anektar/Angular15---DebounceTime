@@ -8,18 +8,20 @@ import { fromEvent, Observable, debounceTime } from 'rxjs';
 })
 export class AppComponent {
   name = 'Angular ' + VERSION.major;
-  private clicks: Observable<Event>;
-  private readonly result: Observable<Event>;
+  private clicks: Observable<Event> | null = null;
+  private result: Observable<Event>;
 
   public constructor() {
     this.initClicks(1000);
-
-    this.result = this.clicks.pipe(debounceTime(1000));
-
     this.result.subscribe((x) => console.log('Clicked! Data:', x));
   }
 
-  public initClicks(debounceTime: number = 1000): void {
+  public initClicks(delay: number = 1000): void {
     this.clicks = fromEvent(document, 'click');
+    this.result = this.clicks.pipe(debounceTime(delay));
+  }
+
+  public clear(): void {
+    location.reload();
   }
 }
